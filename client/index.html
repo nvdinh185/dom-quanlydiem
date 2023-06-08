@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Điểm</title>
+</head>
+
+<body>
+    <table id="tbl" border="1px" style="width: 450px"></table><br />
+    <br /><br />
+    <form id="add-form" style="display: none;">
+        <div>
+            <label>Tên sinh viên</label>
+            <input type="text" name="name" placeholder="Nhập tên sinh viên"><br />
+            <span></span>
+        </div>
+        <br />
+        <div>
+            <label>Toán</label>
+            <input type="number" name="toan" placeholder="Nhập điểm Toán"><br />
+            <span></span>
+        </div>
+        <br />
+        <div>
+            <label>Lý</label>
+            <input type="number" name="ly" placeholder="Nhập điểm Lý"><br />
+            <span></span>
+        </div>
+        <br />
+        <div>
+            <label>Hóa</label>
+            <input type="number" name="hoa" placeholder="Nhập điểm Hóa"><br />
+            <span></span>
+        </div>
+        <br />
+        <div>
+            <button id="create">Thêm</button>
+            <button style="display: none;" id="update">Sửa</button>
+            <button id="cancel">Cancel</button>
+        </div>
+    </form>
+    <div id="manage">
+        <button id="add">Thêm mới</button><br /><br />
+        <button id="filter">Lọc ra những sinh viên giỏi</button><br /><br />
+        <button id="addOneMath">Cộng thêm 1 điểm toán</button><br /><br />
+        <button id="addProperty">Thêm thuộc tính tổng điểm</button><br /><br />
+        <button id="sort">Sắp xếp theo tổng điểm tăng dần</button>
+    </div>
+    <script src="lib/axios.min.js"></script>
+    <script src="main.js"></script>
+</body>
+
+</html>

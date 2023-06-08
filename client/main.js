@@ -1,58 +1,14 @@
-const students = [
-    {
-        id: 1,
-        name: "Dinh",
-        toan: 5,
-        ly: 6,
-        hoa: 7
-    },
-    {
-        id: 2,
-        name: "Nam",
-        toan: 10,
-        ly: 8,
-        hoa: 5,
-    },
-    {
-        id: 3,
-        name: "Tan",
-        toan: 3,
-        ly: 5,
-        hoa: 5,
-    },
-    {
-        id: 4,
-        name: "Hung",
-        toan: 9,
-        ly: 7,
-        hoa: 7,
-    },
-    {
-        id: 5,
-        name: "Tri",
-        toan: 9,
-        ly: 8,
-        hoa: 9,
-    },
-    {
-        id: 6,
-        name: "Anh",
-        toan: 9,
-        ly: 10,
-        hoa: 9,
-    },
-    {
-        id: 7,
-        name: "Binh",
-        toan: 3,
-        ly: 8,
-        hoa: 9,
-    }
-];
+const studentsApi = "http://localhost:3000/students";
+const students = [];
 
 const tbElement = document.querySelector('#tbl');
+async function getData() {
+    var listStudents = await axios.get(studentsApi);
+    students.push.apply(students, listStudents.data);
 
-renderHTML(students, tbElement);
+    renderHTML(students, tbElement);
+}
+getData();
 
 function renderHTML(arr, tbEl) {
 
@@ -146,4 +102,65 @@ function sortStudents(arrStudents) {
             }
         }
     }
+}
+
+var addElement = document.querySelector('#add');
+var manageElement = document.querySelector('#manage');
+var formElement = document.forms['add-form'];
+
+addElement.onclick = function () {
+    formElement.style.display = 'block';
+    manageElement.style.display = 'none';
+}
+
+var addBtnElement = document.querySelector('#create');
+var cancelBtnElement = document.querySelector('#cancel');
+var stName = document.querySelector('input[name="name"]');
+var toan = document.querySelector('input[name="toan"]');
+var ly = document.querySelector('input[name="ly"]');
+var hoa = document.querySelector('input[name="hoa"]');
+
+addBtnElement.onclick = async function (e) {
+    e.preventDefault();
+
+    const newSt = {
+        id: generateUuid(),
+        name: stName.value,
+        toan: Number(toan.value),
+        ly: Number(ly.value),
+        hoa: Number(hoa.value)
+    }
+
+    await axios({
+        method: "POST",
+        url: studentsApi,
+        data: newSt,
+        headers: { "Content-Type": "application/json" },
+    })
+
+    students.push(newSt);
+    renderHTML(students, tbElement);
+    stName.value = '';
+    toan.value = '';
+    ly.value = '';
+    hoa.value = '';
+    formElement.style.display = 'none';
+    manageElement.style.display = 'block';
+
+    function generateUuid() {
+        return 'xxxx-xxxx-xxx-xxxx'.replace(/[x]/g, function (c) {
+            var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
+    }
+}
+
+cancelBtnElement.onclick = function (e) {
+    e.preventDefault();
+    stName.value = '';
+    toan.value = '';
+    ly.value = '';
+    hoa.value = '';
+    formElement.style.display = 'none';
+    manageElement.style.display = 'block';
 }
