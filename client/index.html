@@ -19,6 +19,12 @@
         </div>
         <br />
         <div>
+            <label>Địa chỉ</label>
+            <input type="text" name="address" placeholder="Nhập địa chỉ"><br />
+            <span></span>
+        </div>
+        <br />
+        <div>
             <label>Toán</label>
             <input type="number" name="toan" placeholder="Nhập điểm Toán"><br />
             <span></span>
@@ -37,17 +43,12 @@
         </div>
         <br />
         <div>
-            <button id="create">Thêm</button>
+            <button style="display: none;" id="create">Thêm</button>
+            <button style="display: none;" id="update">Sửa</button>
             <button id="cancel">Cancel</button>
         </div>
     </form>
-    <div id="manage">
-        <button id="add">Thêm mới</button><br /><br />
-        <button id="filter">Lọc ra những sinh viên giỏi</button><br /><br />
-        <button id="addOneMath">Cộng thêm 1 điểm toán</button><br /><br />
-        <button id="addProperty">Thêm thuộc tính tổng điểm</button><br /><br />
-        <button id="sort">Sắp xếp theo tổng điểm tăng dần</button>
-    </div>
+    <button id="add">Thêm mới</button><br /><br />
     <script src="lib/axios.min.js"></script>
     <script src="js/main.js"></script>
 </body>

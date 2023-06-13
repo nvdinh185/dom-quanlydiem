@@ -20,6 +20,7 @@ function renderHTML(arr, tbEl) {
     for (const key in arr[0]) {
         htmlTitle += `<th>${key}</th>`;
     }
+    htmlTitle += `<th colspan=2>Chức năng</th>`;
 
     tr1Element.innerHTML = htmlTitle;
     tbEl.appendChild(tr1Element);
@@ -30,8 +31,10 @@ function renderHTML(arr, tbEl) {
 
         var htmlContent = '';
         for (const key in el) {
-            htmlContent += `<td>${el[key]}</td>`
+            htmlContent += `<td>${el[key]}</td>`;
         }
+        htmlContent += `<td><button onclick=editSt('${el.id}')>Sửa</button></td>`;
+        htmlContent += `<td><button onclick=deleteSt('${el.id}')>Xóa</button></td>`;
 
         tr2Element.innerHTML = htmlContent;
 
@@ -39,83 +42,57 @@ function renderHTML(arr, tbEl) {
 
     })
 }
-const filterElement = document.querySelector('#filter');
-const addOneMathElement = document.querySelector('#addOneMath');
-const addPropertyElement = document.querySelector('#addProperty');
-const sortElement = document.querySelector('#sort');
 
-filterElement.onclick = function () {
-    renderHTML(filterGoodStudents(students), tbElement);
+var edId;
+function editSt(id) {
+    edId = id;
+    formElement.style.display = 'block';
+    updateBtnElement.style.display = 'block';
+    addNewElement.style.display = 'none';
+    addBtnElement.style.display = 'none';
+
+    var idx = students.findIndex(function (el) {
+        return el.id == id;
+    })
+    stName.value = students[idx].name;
+    address.value = students[idx].address;
+    toan.value = students[idx].toan;
+    ly.value = students[idx].ly;
+    hoa.value = students[idx].hoa;
 }
 
-addOneMathElement.onclick = function () {
-    addOneMath(students);
-    renderHTML(students, tbElement);
-}
+async function deleteSt(id) {
+    if (confirm("Bạn có chắc muốn xóa?")) {
+        await axios({
+            method: "DELETE",
+            url: studentsApi + '/' + id,
+            headers: { "Content-Type": "application/json" },
+        })
 
-addPropertyElement.onclick = function () {
-    addPropertySum(students);
-    renderHTML(students, tbElement);
-}
+        var idx = students.findIndex(function (el) {
+            return el.id == id;
+        })
 
-sortElement.onclick = function () {
-    sortStudents(students);
-    renderHTML(students, tbElement);
-}
-
-// 3. Hàm lọc ra các sinh viên xếp loại giỏi
-function filterGoodStudents(arrStudents) {
-    var listStudents = [];
-    for (const student of arrStudents) {
-        if ((student.toan >= 8 && student.ly >= 8 && student.hoa >= 8)) {
-            listStudents.push(student);
-        }
-    }
-    return listStudents;
-}
-
-// 5. Hàm cộng cho mỗi sinh viên 1 điểm toán
-function addOneMath(arrStudents) {
-    for (const student of arrStudents) {
-        student.toan < 10 ? student.toan += 1 : '';
+        students.splice(idx, 1);
+        renderHTML(students, tbElement);
     }
 }
 
-// 6. Hàm thêm thuộc tính tổng điểm 3 môn
-function addPropertySum(arrStudents) {
-    for (const student of arrStudents) {
-        student.sum = student.toan + student.ly + student.hoa;
-    }
-}
-
-//9. Hàm sắp xếp danh sách sinh viên theo tổng điểm tăng dần
-function sortStudents(arrStudents) {
-
-    var size = arrStudents.length;
-
-    for (var i = 0; i < size - 1; i++) {
-        for (var j = 0; j < size - i - 1; j++) {
-            if (arrStudents[j].sum > arrStudents[j + 1].sum) {
-                var temp = arrStudents[j];
-                arrStudents[j] = arrStudents[j + 1];
-                arrStudents[j + 1] = temp;
-            }
-        }
-    }
-}
-
-var addElement = document.querySelector('#add');
-var manageElement = document.querySelector('#manage');
+var addNewElement = document.querySelector('#add');
 var formElement = document.forms['add-form'];
 
-addElement.onclick = function () {
+addNewElement.onclick = function () {
     formElement.style.display = 'block';
-    manageElement.style.display = 'none';
+    addBtnElement.style.display = 'block';
+    addNewElement.style.display = 'none';
+    updateBtnElement.style.display = 'none';
 }
 
 var addBtnElement = document.querySelector('#create');
+var updateBtnElement = document.querySelector('#update');
 var cancelBtnElement = document.querySelector('#cancel');
 var stName = document.querySelector('input[name="name"]');
+var address = document.querySelector('input[name="address"]');
 var toan = document.querySelector('input[name="toan"]');
 var ly = document.querySelector('input[name="ly"]');
 var hoa = document.querySelector('input[name="hoa"]');
@@ -126,6 +103,7 @@ addBtnElement.onclick = async function (e) {
     const newSt = {
         id: generateUuid(),
         name: stName.value,
+        address: address.value,
         toan: Number(toan.value),
         ly: Number(ly.value),
         hoa: Number(hoa.value)
@@ -140,12 +118,7 @@ addBtnElement.onclick = async function (e) {
 
     students.push(newSt);
     renderHTML(students, tbElement);
-    stName.value = '';
-    toan.value = '';
-    ly.value = '';
-    hoa.value = '';
-    formElement.style.display = 'none';
-    manageElement.style.display = 'block';
+    resetForm();
 
     function generateUuid() {
         return 'xxxx-xxxx-xxx-xxxx'.replace(/[x]/g, function (c) {
@@ -155,12 +128,46 @@ addBtnElement.onclick = async function (e) {
     }
 }
 
+updateBtnElement.onclick = async function (e) {
+    e.preventDefault();
+
+    const edSt = {
+        id: edId,
+        name: stName.value,
+        address: address.value,
+        toan: Number(toan.value),
+        ly: Number(ly.value),
+        hoa: Number(hoa.value)
+    }
+
+    await axios({
+        method: "PUT",
+        url: studentsApi,
+        data: edSt,
+        headers: { "Content-Type": "application/json" },
+    })
+
+    var idx = students.findIndex(function (el) {
+        return el.id == edId;
+    })
+
+    students.splice(idx, 1, edSt);
+    renderHTML(students, tbElement);
+
+    resetForm();
+}
+
 cancelBtnElement.onclick = function (e) {
     e.preventDefault();
+    resetForm();
+}
+
+function resetForm() {
     stName.value = '';
+    address.value = '';
     toan.value = '';
     ly.value = '';
     hoa.value = '';
     formElement.style.display = 'none';
-    manageElement.style.display = 'block';
+    addNewElement.style.display = 'block';
 }
