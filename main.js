@@ -83,6 +83,7 @@ function renderHTML(arr, tbEl) {
 
     })
 }
+
 const filterElement = document.querySelector('#filter');
 const addOneMathElement = document.querySelector('#addOneMath');
 const addPropertyElement = document.querySelector('#addProperty');
