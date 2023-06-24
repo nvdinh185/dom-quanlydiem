@@ -48,7 +48,7 @@ function editSt(id) {
     edId = id;
     formElement.style.display = 'block';
     updateBtnElement.style.display = 'block';
-    addNewElement.style.display = 'none';
+    manageElement.style.display = 'none';
     addBtnElement.style.display = 'none';
 
     var idx = students.findIndex(function (el) {
@@ -79,12 +79,13 @@ async function deleteSt(id) {
 }
 
 var addNewElement = document.querySelector('#add');
+var manageElement = document.querySelector('#manage');
 var formElement = document.forms['add-form'];
 
 addNewElement.onclick = function () {
     formElement.style.display = 'block';
     addBtnElement.style.display = 'block';
-    addNewElement.style.display = 'none';
+    manageElement.style.display = 'none';
     updateBtnElement.style.display = 'none';
 }
 
@@ -169,5 +170,66 @@ function resetForm() {
     ly.value = '';
     hoa.value = '';
     formElement.style.display = 'none';
-    addNewElement.style.display = 'block';
+    manageElement.style.display = 'block';
+}
+
+const filterElement = document.querySelector('#filter');
+const addOneMathElement = document.querySelector('#addOneMath');
+const addPropertyElement = document.querySelector('#addProperty');
+const sortElement = document.querySelector('#sort');
+
+filterElement.onclick = function () {
+    renderHTML(filterGoodStudents(students), tbElement);
+}
+
+addOneMathElement.onclick = function () {
+    addOneMath(students);
+    renderHTML(students, tbElement);
+}
+
+addPropertyElement.onclick = function () {
+    addPropertySum(students);
+    renderHTML(students, tbElement);
+}
+
+sortElement.onclick = function () {
+    sortStudents(students);
+    renderHTML(students, tbElement);
+}
+
+// 3. Hàm lọc ra các sinh viên xếp loại giỏi
+function filterGoodStudents(arrStudents) {
+    return arrStudents.filter(function (student) {
+        return student.toan >= 8 && student.ly >= 8 && student.hoa >= 8;
+    });
+}
+
+// 5. Hàm cộng cho mỗi sinh viên 1 điểm toán
+function addOneMath(arrStudents) {
+    arrStudents.forEach(function (student) {
+        student.toan < 10 ? student.toan += 1 : '';
+    });
+}
+
+// 6. Hàm thêm thuộc tính tổng điểm 3 môn
+function addPropertySum(arrStudents) {
+    arrStudents.forEach(function (student) {
+        student.sum = student.toan + student.ly + student.hoa;
+    })
+}
+
+//9. Hàm sắp xếp danh sách sinh viên theo tổng điểm tăng dần
+function sortStudents(arrStudents) {
+
+    function compare(a, b) {
+        if (a.sum > b.sum) {
+            return 1;
+        }
+        if (a.sum < b.sum) {
+            return -1;
+        }
+        return 0;
+    }
+
+    arrStudents.sort(compare);
 }
