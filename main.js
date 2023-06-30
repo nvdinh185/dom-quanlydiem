@@ -58,30 +58,26 @@ function renderHTML(arr, tbEl) {
 
     tbEl.innerHTML = '';
     // Tiêu đề
-    const tr1Element = document.createElement('tr');
-
     var htmlTitle = '';
     for (const key in arr[0]) {
         htmlTitle += `<th>${key}</th>`;
     }
 
-    tr1Element.innerHTML = htmlTitle;
-    tbEl.appendChild(tr1Element);
+    tbEl.innerHTML = '<thead><tr>' + htmlTitle + '</tr></thead>';
 
     // Nội dung
+    var htmls = '<tbody>';
     arr.forEach(function (el) {
-        const tr2Element = document.createElement('tr');
-
         var htmlContent = '';
         for (const key in el) {
-            htmlContent += `<td>${el[key]}</td>`
+            htmlContent += `<td>${el[key]}</td>`;
         }
 
-        tr2Element.innerHTML = htmlContent;
-
-        tbEl.appendChild(tr2Element);
+        htmls += '<tr>' + htmlContent + '</tr>';
 
     })
+    htmls += '</tbody>';
+    tbEl.innerHTML += htmls;
 }
 
 const filterElement = document.querySelector('#filter');
