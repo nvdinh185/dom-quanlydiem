@@ -12,35 +12,29 @@ getData();
 
 function renderHTML(arr, tbEl) {
 
-    tbEl.innerHTML = '';
     // Tiêu đề
-    const tr1Element = document.createElement('tr');
-
     var htmlTitle = '';
     for (const key in arr[0]) {
         htmlTitle += `<th>${key}</th>`;
     }
     htmlTitle += `<th colspan=2>Chức năng</th>`;
 
-    tr1Element.innerHTML = htmlTitle;
-    tbEl.appendChild(tr1Element);
+    tbEl.innerHTML = '<thead><tr>' + htmlTitle + '</tr></thead>';
 
     // Nội dung
+    var htmlBody = '<tbody>';
     arr.forEach(function (el) {
-        const tr2Element = document.createElement('tr');
-
-        var htmlContent = '';
+        var htmlContent = '<tr>';
         for (const key in el) {
             htmlContent += `<td>${el[key]}</td>`;
         }
         htmlContent += `<td><button onclick=editSt('${el.id}')>Sửa</button></td>`;
         htmlContent += `<td><button onclick=deleteSt('${el.id}')>Xóa</button></td>`;
-
-        tr2Element.innerHTML = htmlContent;
-
-        tbEl.appendChild(tr2Element);
-
+        htmlContent += '</tr>';
+        htmlBody += htmlContent;
     })
+    htmlBody += '</tbody>';
+    tbEl.innerHTML += htmlBody;
 }
 
 var edId;
