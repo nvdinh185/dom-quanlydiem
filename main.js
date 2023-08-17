@@ -56,7 +56,6 @@ renderHTML(students, tbElement);
 
 function renderHTML(arr, tbEl) {
 
-    tbEl.innerHTML = '';
     // Tiêu đề
     var htmlTitle = '';
     for (const key in arr[0]) {
